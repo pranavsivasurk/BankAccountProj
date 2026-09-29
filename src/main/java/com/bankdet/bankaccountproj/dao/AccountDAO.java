@@ -17,18 +17,32 @@ public class AccountDAO {
 
     public List<Account> getAllAccounts(){
         String sql="SELECT AccountName,AccountNumber,AccountBalance AS balance,AccountType FROM bankacc.AccountDetails";
-
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Account.class));
     }
 
-    public List<Account> getAccountByNum(String accountNum){
+    public Account getAccountByNum(String accountNum){
         String sql="Select AccountName,AccountNumber,AccountBalance AS balance,AccountType From bankacc.AccountDetails WHERE AccountDetails.AccountNumber =?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Account.class),accountNum);
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Account.class),accountNum);
     }
 
-    public int addNewAccount(Account account) {
+    public Account addNewAccount(Account account) {
         String sql="INSERT INTO bankacc.AccountDetails (AccountName, AccountNumber, AccountBalance,AccountType) VALUES (?, ?, ?,?) ";
-        return jdbcTemplate.update(sql,account.getAccountName(),account.getAccountNumber(),account.getBalance(),account.getAccountType());
+        jdbcTemplate.update(sql,account.getAccountName(),account.getAccountNumber(),account.getBalance(),account.getAccountType());
+
+        return account;
     }
 
+    public Account updateAccount(Account account) {
+        String sql="UPDATE bankacc.AccountDetails SET AccountName=?,AccountNumber=?,AccountBalance=?,AccountType=? WHERE AccountNumber=?";
+        jdbcTemplate.update(sql,account.getAccountName(),account.getAccountNumber(),account.getBalance(),account.getAccountType(),account.getAccountNumber());
+        return account;
+    }
+
+    public Account deleteAccount(String accountNum) {
+        String sql="DELETE FROM bankacc.AccountDetails WHERE AccountNumber=?";
+        Account resultAcc=getAccountByNum(accountNum);
+        jdbcTemplate.update(sql,accountNum);
+
+        return resultAcc;
+    }
 }

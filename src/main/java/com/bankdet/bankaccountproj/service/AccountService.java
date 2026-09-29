@@ -1,8 +1,10 @@
 package com.bankdet.bankaccountproj.service;
 
 import com.bankdet.bankaccountproj.dao.AccountDAO;
+import com.bankdet.bankaccountproj.exception.AccountNotFoundException;
 import com.bankdet.bankaccountproj.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,14 +18,34 @@ public class AccountService {
         return accountDAO.getAllAccounts();
     }
 
-    public List<Account> getAccountByNum(String accountNum){
-        return accountDAO.getAccountByNum(accountNum);
+    public Account getAccountByNum(String accountNum){
+        Account resultAcc=accountDAO.getAccountByNum(accountNum);
+        if(resultAcc==null){
+            throw new AccountNotFoundException("Account Not Found");
+        }
+        return resultAcc;
     }
 
-    public int addNewAccount(Account account) {
+    public Account addNewAccount(Account account) {
         if(account.getAccountType()==null){
             account.setAccountType("No Type");
         }
         return accountDAO.addNewAccount(account);
+    }
+
+    public Account updateAccount(Account account) {
+        Account resultAccount=accountDAO.updateAccount(account);
+        if(resultAccount==null){
+            throw new AccountNotFoundException("Account Not Found");
+        }
+        return resultAccount;
+    }
+
+    public Account deleteAccount(String accountNum) {
+        Account resultAccount=accountDAO.deleteAccount(accountNum);
+        if(resultAccount==null){
+            throw new AccountNotFoundException("Account Not Found");
+        }
+        return resultAccount;
     }
 }
