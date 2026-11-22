@@ -14,9 +14,9 @@ public class Account {
     private double balance;
 
     public Account(){
-        accountName="NONAME";
-        accountNumber="NOACCNUM";
-        accountType="NOTYPE";
+        accountName="NO NAME";
+        accountNumber="NO ACC NUM";
+        accountType="NO TYPE";
         balance=-1;
     }
     public Account(String AccountName, String AccountNumber, double balance) {
